@@ -3,12 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Welcome</title>
+    <style>
+        body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:#f8fafc;color:#0f172a;display:flex;align-items:center;justify-content:center;height:100vh}
+        .card{background:white;padding:28px;border-radius:12px;box-shadow:0 8px 32px rgba(2,6,23,0.08);max-width:640px;width:90%;text-align:center}
+        h1{margin:0 0 6px}
+        p{color:#475569}
+        .actions{margin-top:18px}
+        .btn{background:#2563eb;color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+    </style>
 </head>
-
 <body>
-    <h1> this is my App</h1>
-    <h2>This is my First page</h2>
-    <p>this page is for htmi website</p>
+    <div class="card" id="app">
+        <h1>Welcome</h1>
+        <p id="subtitle">Loading…</p>
+        <div class="actions">
+            <button class="btn" id="signOut">Sign out</button>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            const subtitle = document.getElementById('subtitle');
+            const signOut = document.getElementById('signOut');
+            if(!user){
+                // no user: go to login
+                window.location.href = 'login.html';
+            } else {
+                subtitle.textContent = 'Signed in as ' + (user.email || 'unknown');
+            }
+
+            signOut.addEventListener('click', ()=>{
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            });
+        })();
+    </script>
 </body>
 </html>
