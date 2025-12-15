@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Sign in</title>
+	<style>
+		:root{--bg:#f3f6fb;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+		*{box-sizing:border-box}
+		body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg),#eef4ff);display:flex;align-items:center;justify-content:center;height:100vh;color:#0f172a}
+		.container{width:100%;max-width:420px;padding:20px}
+		.card{background:var(--card);border-radius:12px;box-shadow:0 6px 24px rgba(16,24,40,0.08);padding:28px}
+		.logo{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+		.logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+		h1{margin:0;font-size:20px}
+		p.lead{margin:6px 0 18px;color:var(--muted);font-size:14px}
+		form {display:grid;gap:12px}
+		label{font-size:13px;color:#0f172a}
+		input[type="email"],input[type="password"]{width:100%;Padding:12px;border:1px solid #e6eef8;border-radius:8px;font-size:14px}
+		.row{display:flex;align-items:center;justify-content:space-between}
+		.actions{display:flex;gap:10px;align-items:center}
+		.btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+		.btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(37,99,235,0.12)}
+		.meta{display:flex;gap:10px;align-items:center}
+		.muted{color:var(--muted);font-size:13px}
+		.helper{font-size:13px;color:#dc2626;margin-top:6px}
+		.inline{display:flex;gap:8px;align-items:center}
+		.show-pass{background:transparent;border:0;color:var(--muted);cursor:pointer}
+		.footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
+		@media (max-width:480px){.container{padding:12px}.card{padding:20px}}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="card" role="main">
+			<div class="logo">
+				<div class="mark">S</div>
+				<div>
+					<h1>Sign in to your account</h1>
+					<p class="lead">Enter your credentials to continue</p>
+				</div>
+			</div>
+
+			<form id="loginForm" novalidate>
+				<div>
+					<label for="email">Email address</label>
+					<input id="email" name="email" type="email" inputmode="email" autocomplete="email" required>
+					<div id="emailError" class="helper" aria-live="polite" hidden></div>
+				</div>
+
+				<div>
+					<label for="password">Password</label>
+					<div style="display:flex;gap:8px;align-items:center">
+						<input id="password" name="password" type="password" autocomplete="current-password" required style="flex:1">
+						<button type="button" id="togglePass" class="show-pass" aria-label="Show password">Show</button>
+					</div>
+					<div id="passwordError" class="helper" aria-live="polite" hidden></div>
+				</div>
+
+				<div class="row">
+					<label style="display:flex;align-items:center;gap:8px;font-size:14px"><input id="remember" name="remember" type="checkbox"> Remember me</label>
+					<a href="#" class="muted">Forgot password?</a>
+				</div>
+
+				<div class="row">
+					<button class="btn" type="submit">Sign in</button>
+					<button class="btn ghost" type="button" id="demoBtn">Use demo</button>
+				</div>
+
+			</form>
+
+			<div class="footer">Don't have an account? <a href="#">Contact admin</a></div>
+		</div>
+	</div>
+
+	<script>
+		(function(){
+			const form = document.getElementById('loginForm');
+			const email = document.getElementById('email');
+			const password = document.getElementById('password');
+			const emailError = document.getElementById('emailError');
+			const passwordError = document.getElementById('passwordError');
+			const toggle = document.getElementById('togglePass');
+			const demoBtn = document.getElementById('demoBtn');
+
+			function showError(el, msg){ el.textContent = msg; el.hidden = false; }
+			function clearError(el){ el.textContent = ''; el.hidden = true; }
+
+			function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+			toggle.addEventListener('click', ()=>{
+				if(password.type === 'password'){
+					password.type = 'text'; toggle.textContent = 'Hide';
+				} else { password.type = 'password'; toggle.textContent = 'Show'; }
+			});
+
+			demoBtn.addEventListener('click', ()=>{
+				email.value = 'user@example.com'; password.value = 'password';
+				clearError(emailError); clearError(passwordError);
+			});
+
+			form.addEventListener('submit', (ev)=>{
+				ev.preventDefault();
+				let ok = true;
+				clearError(emailError); clearError(passwordError);
+
+				if(!email.value.trim()){ showError(emailError,'Please enter your email'); ok=false; }
+				else if(!validEmail(email.value.trim())){ showError(emailError,'Please enter a valid email'); ok=false; }
+
+				if(!password.value){ showError(passwordError,'Please enter your password'); ok=false; }
+
+				if(!ok) return;
+
+				// Simulated authentication - replace with real API call
+				const creds = {email: email.value.trim(), remember: document.getElementById('remember').checked};
+				// For demo, accept any password but show a short delay
+				const btn = form.querySelector('button[type=submit]');
+				btn.disabled = true; btn.textContent = 'Signing in...';
+
+				setTimeout(()=>{
+					// save user to localStorage and redirect
+					localStorage.setItem('user', JSON.stringify(creds));
+					window.location.href = 'index.html';
+				}, 800);
+			});
+		})();
+	</script>
+</body>
+</html>
+
